@@ -1,0 +1,40 @@
+<div class="container">
+  <header>
+    <h1>TaskManager</h1>
+    <p>Organiza tus actividades diarias</p>
+  </header>
+
+  <section class="task-section">
+    <h2>Mis tareas</h2>
+
+    <p *ngIf="cargando">Cargando tareas...</p>
+
+    <p *ngIf="error">{{ error }}</p>
+
+    <div *ngIf="!cargando && !error">
+
+      <p *ngIf="tareas.length === 0">
+        No hay tareas registradas.
+      </p>
+
+      <div class="task-card" *ngFor="let tarea of tareas">
+
+        <div>
+          <h3>{{ tarea.titulo }}</h3>
+
+          <p>{{ tarea.descripcion }}</p>
+
+          <p>
+            Fecha límite: {{ tarea.fechaLimite | date:'dd/MM/yyyy' }}
+          </p>
+
+          <span>Prioridad: {{ tarea.prioridad }}</span>
+
+          <span> | Estado: {{ tarea.estado }}</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</div>

@@ -1,0 +1,222 @@
+<div class="dashboard">
+
+  <header class="topbar">
+    <div>
+      <h1>TaskManager</h1>
+      <p>Organiza tus actividades y alcanza tus objetivos.</p>
+    </div>
+
+    <button class="btn-primary" (click)="abrirFormulario()">
+      + Nueva tarea
+    </button>
+  </header>
+
+  <section class="statistics">
+
+    <div class="stat-card">
+      <span>Total de tareas</span>
+      <h2>{{ totalTareas }}</h2>
+    </div>
+
+    <div class="stat-card pending">
+      <span>Pendientes</span>
+      <h2>{{ pendientes }}</h2>
+    </div>
+
+    <div class="stat-card completed">
+      <span>Completadas</span>
+      <h2>{{ completadas }}</h2>
+    </div>
+
+  </section>
+
+  <section class="tasks-section">
+
+    <div class="section-header">
+      <div>
+        <h2>Mis tareas</h2>
+        <p>Administra tus actividades diarias.</p>
+      </div>
+    </div>
+
+    <div class="filters">
+
+      <input
+        type="text"
+        placeholder="Buscar tarea..."
+        [(ngModel)]="busqueda"
+        (ngModelChange)="aplicarFiltrosLocales()">
+
+      <select
+        [(ngModel)]="filtroEstado"
+        (ngModelChange)="aplicarFiltrosLocales()">
+
+        <option value="Todas">Todos los estados</option>
+        <option value="Pendiente">Pendientes</option>
+        <option value="Completada">Completadas</option>
+
+      </select>
+
+      <select
+        [(ngModel)]="ordenamiento"
+        (ngModelChange)="aplicarFiltrosLocales()">
+
+        <option value="">Sin ordenar</option>
+        <option value="fecha">Por fecha</option>
+        <option value="prioridad">Por prioridad</option>
+
+      </select>
+
+    </div>
+
+    <p *ngIf="cargando">Cargando tareas...</p>
+
+    <p class="error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </p>
+
+    <div class="task-list" *ngIf="!cargando">
+
+      <article
+        class="task-card"
+        *ngFor="let tarea of tareasVisibles">
+
+        <div class="task-information">
+
+          <div class="task-title">
+            <h3 [class.finished]="tarea.estado === 'Completada'">
+              {{ tarea.titulo }}
+            </h3>
+
+            <span
+              class="status"
+              [class.done]="tarea.estado === 'Completada'">
+              {{ tarea.estado }}
+            </span>
+          </div>
+
+          <p>{{ tarea.descripcion }}</p>
+
+          <div class="task-details">
+            <span>
+              Fecha límite:
+              {{ tarea.fechaLimite | date:'dd/MM/yyyy' }}
+            </span>
+
+            <span
+              class="priority"
+              [class.high]="tarea.prioridad === 'Alta'"
+              [class.medium]="tarea.prioridad === 'Media'"
+              [class.low]="tarea.prioridad === 'Baja'">
+              {{ tarea.prioridad }}
+            </span>
+          </div>
+
+        </div>
+
+        <div class="task-actions">
+
+          <button
+            class="btn-complete"
+            (click)="cambiarEstado(tarea)">
+            {{ tarea.estado === 'Pendiente' ? 'Completar' : 'Reabrir' }}
+          </button>
+
+          <button
+            class="btn-edit"
+            (click)="editarTarea(tarea)">
+            Editar
+          </button>
+
+          <button
+            class="btn-delete"
+            (click)="eliminarTarea(tarea)">
+            Eliminar
+          </button>
+
+        </div>
+
+      </article>
+
+      <div class="empty" *ngIf="tareasVisibles.length === 0">
+        No se encontraron tareas.
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FORMULARIO -->
+
+  <div class="modal-overlay" *ngIf="mostrarFormulario">
+
+    <div class="modal">
+
+      <h2>{{ editando ? 'Editar tarea' : 'Nueva tarea' }}</h2>
+
+      <form #formulario="ngForm" (ngSubmit)="guardarTarea()">
+
+        <label>Título</label>
+
+        <input
+          type="text"
+          name="titulo"
+          [(ngModel)]="tareaActual.titulo"
+          required
+          maxlength="100"
+          placeholder="Nombre de la tarea">
+
+        <label>Descripción</label>
+
+        <textarea
+          name="descripcion"
+          [(ngModel)]="tareaActual.descripcion"
+          maxlength="500"
+          placeholder="Describe la actividad">
+        </textarea>
+
+        <label>Fecha límite</label>
+
+        <input
+          type="date"
+          name="fechaLimite"
+          [(ngModel)]="tareaActual.fechaLimite"
+          required>
+
+        <label>Prioridad</label>
+
+        <select
+          name="prioridad"
+          [(ngModel)]="tareaActual.prioridad">
+
+          <option value="Baja">Baja</option>
+          <option value="Media">Media</option>
+          <option value="Alta">Alta</option>
+
+        </select>
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="cerrarFormulario()">
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="formulario.invalid">
+            {{ editando ? 'Guardar cambios' : 'Crear tarea' }}
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

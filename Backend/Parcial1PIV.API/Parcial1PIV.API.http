@@ -1,0 +1,6 @@
+@Parcial1PIV.API_HostAddress = http://localhost:5070
+
+GET {{Parcial1PIV.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

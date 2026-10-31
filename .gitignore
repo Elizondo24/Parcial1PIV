@@ -1,0 +1,17 @@
+# .NET
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+
+# Angular
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
+
+# Archivos confidenciales
+**/secrets.json
+.env
+.env.*
